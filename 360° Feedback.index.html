@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///C:/Users/simina.simion/Downloads/360-feedback-app%20(2).html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>360° Feedback</title>
+<link href="./360° Feedback.index_files/css2" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --ink-light: #4a4a6a;
+    --ink-muted: #9090aa;
+    --cream: #faf9f6;
+    --white: #ffffff;
+    --accent: #5b4fcf;
+    --accent-light: #ede9ff;
+    --accent-mid: #8b7ff0;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --border: #e8e6f0;
+    --shadow: 0 1px 3px rgba(26,26,46,0.08), 0 4px 16px rgba(26,26,46,0.04);
+    --shadow-lg: 0 8px 32px rgba(26,26,46,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ---- SETUP BANNER ---- */
+  #setup-banner {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d2b5e 100%);
+    color: white;
+    padding: 20px 32px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    position: relative;
+  }
+  #setup-banner .icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+  #setup-banner h2 { font-family: 'DM Serif Display', serif; font-size: 18px; margin-bottom: 6px; }
+  #setup-banner p { font-size: 13px; opacity: 0.8; line-height: 1.5; }
+  #setup-banner ol { font-size: 13px; opacity: 0.85; padding-left: 18px; margin-top: 8px; }
+  #setup-banner li { margin-bottom: 4px; }
+  #setup-banner a { color: #a5f3fc; }
+  .setup-input-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .setup-input-row input {
+    flex: 1; min-width: 240px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    color: white;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+  }
+  .setup-input-row input::placeholder { color: rgba(255,255,255,0.45); }
+  .setup-input-row input:focus { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.18); }
+  .btn-setup {
+    background: #5b4fcf; border: none; color: white; padding: 9px 20px;
+    border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .btn-setup:hover { background: #4a3fb0; }
+  #setup-status { font-size: 12px; margin-top: 8px; opacity: 0.9; }
+  #setup-status.ok { color: #86efac; }
+  #setup-status.err { color: #fca5a5; }
+  #close-banner {
+    position: absolute; top: 14px; right: 16px;
+    background: none; border: none; color: rgba(255,255,255,0.5);
+    font-size: 20px; cursor: pointer; padding: 4px;
+  }
+  #close-banner:hover { color: white; }
+
+  /* ---- NAV ---- */
+  nav {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 1px 0 var(--border);
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-light);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .nav-tab:hover { background: var(--accent-light); color: var(--accent); }
+  .nav-tab.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+
+  /* ---- LAYOUT ---- */
+  .page { display: none; padding: 40px 32px; max-width: 860px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* ---- CARDS ---- */
+  .card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 32px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  .card-sub { color: var(--ink-muted); font-size: 14px; margin-bottom: 28px; }
+
+  /* ---- FORM ELEMENTS ---- */
+  label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-light); margin-bottom: 6px; letter-spacing: 0.02em; }
+  input[type="text"], input[type="email"], select, textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: white;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    margin-bottom: 20px;
+  }
+  input[type="text"]:focus, input[type="email"]:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* ---- RATING ROWS ---- */
+  .rating-section { margin-bottom: 28px; }
+  .rating-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .rating-desc { font-size: 12px; color: var(--ink-muted); margin-bottom: 10px; }
+  .rating-stars { display: flex; gap: 8px; }
+  .star-btn {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: white;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.12s;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .star-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .star-btn.selected { border-color: var(--accent); background: var(--accent); color: white; }
+  .rating-anchor { display: flex; justify-content: space-between; margin-top: 4px; }
+  .rating-anchor span { font-size: 11px; color: var(--ink-muted); }
+
+  /* ---- BUTTONS ---- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #4a3fb0; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(91,79,207,0.35); }
+  .btn-secondary { background: var(--cream); border: 1.5px solid var(--border); color: var(--ink-light); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .btn-full { width: 100%; justify-content: center; }
+
+  /* ---- PROGRESS ---- */
+  .progress-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .progress-bar { flex: 1; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.4s; }
+  .progress-label { font-size: 12px; color: var(--ink-muted); white-space: nowrap; }
+
+  /* ---- REVIEWER LIST ---- */
+  .reviewer-grid { display: grid; gap: 10px; margin-top: 16px; }
+  .reviewer-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    background: white;
+  }
+  .reviewer-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+    flex-shrink: 0;
+  }
+  .reviewer-name { font-size: 14px; font-weight: 600; flex: 1; }
+  .reviewer-role { font-size: 12px; color: var(--ink-muted); }
+  .reviewer-status {
+    font-size: 12px; font-weight: 600;
+    padding: 4px 10px; border-radius: 99px;
+  }
+  .status-done { background: var(--green-light); color: var(--green); }
+  .status-pending { background: var(--amber-light); color: var(--amber); }
+
+  /* ---- RESULTS ---- */
+  .results-header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 24px 28px;
+    background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);
+    border-radius: 14px;
+    color: white;
+    margin-bottom: 24px;
+  }
+  .results-avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .results-name { font-family: 'DM Serif Display', serif; font-size: 22px; }
+  .results-meta { font-size: 13px; opacity: 0.8; }
+
+  .locked-notice {
+    text-align: center; padding: 32px;
+    background: var(--amber-light);
+    border: 1.5px solid #fde68a;
+    border-radius: 14px;
+    color: var(--amber);
+  }
+  .locked-notice .lock-icon { font-size: 32px; margin-bottom: 10px; }
+  .locked-notice h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .locked-notice p { font-size: 13px; opacity: 0.85; }
+
+  .dimension-block { margin-bottom: 20px; }
+  .dim-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .dim-name { font-size: 14px; font-weight: 600; }
+  .dim-score { font-size: 22px; font-weight: 700; color: var(--accent); font-family: 'DM Serif Display', serif; }
+  .dim-score span { font-size: 13px; color: var(--ink-muted); font-family: 'DM Sans', sans-serif; font-weight: 400; }
+  .dim-bar { height: 10px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .dim-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent-mid)); transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+
+  .open-responses { margin-top: 28px; }
+  .open-q { margin-bottom: 20px; }
+  .open-q-label { font-size: 13px; font-weight: 700; color: var(--ink-light); margin-bottom: 10px; letter-spacing: 0.02em; }
+  .response-pill {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .response-pill:before { content: '"'; color: var(--accent); font-size: 18px; font-family: 'DM Serif Display', serif; margin-right: 4px; }
+
+  /* ---- SUBJECT SELECT ---- */
+  .subject-grid { display: grid; gap: 10px; margin-bottom: 24px; }
+  .subject-card {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 20px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .subject-card:hover { border-color: var(--accent); background: var(--accent-light); }
+  .subject-card.selected { border-color: var(--accent); background: var(--accent-light); }
+  .subject-card .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .subject-card.selected .avatar { background: var(--accent); color: white; }
+
+  /* ---- SUCCESS STATE ---- */
+  .success-state {
+    text-align: center; padding: 48px 32px;
+  }
+  .success-icon { font-size: 56px; margin-bottom: 16px; }
+  .success-title { font-family: 'DM Serif Display', serif; font-size: 28px; margin-bottom: 10px; }
+  .success-sub { color: var(--ink-muted); font-size: 15px; }
+
+  /* ---- ADMIN PAGE ---- */
+  .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    background: white; border: 1px solid var(--border); border-radius: 14px;
+    padding: 20px 24px; box-shadow: var(--shadow);
+  }
+  .stat-label { font-size: 12px; color: var(--ink-muted); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .stat-val { font-size: 32px; font-family: 'DM Serif Display', serif; color: var(--accent); margin-top: 4px; }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 700; color: var(--ink-muted); letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 2px solid var(--border); }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--ink); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--cream); }
+
+  .badge {
+    display: inline-block; padding: 3px 8px; border-radius: 99px; font-size: 11px; font-weight: 700;
+  }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-red { background: var(--red-light); color: var(--red); }
+
+  /* ---- SECTION DIVIDER ---- */
+  .section-divider { margin: 28px 0; border: none; border-top: 1px solid var(--border); }
+
+  @media (max-width: 600px) {
+    .page { padding: 24px 16px; }
+    nav { padding: 0 16px; }
+    .admin-grid { grid-template-columns: 1fr; }
+    #setup-banner { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SETUP BANNER -->
+<div id="setup-banner">
+  <div class="icon">⚙️</div>
+  <div style="flex:1">
+    <h2>Connect to Google Sheets — one-time setup</h2>
+    <p>Responses will save permanently to a Google Sheet you own. Follow these 3 steps:</p>
+    <ol>
+      <li>Go to <a href="https://sheets.new/" target="_blank">sheets.new</a> to create a blank Google Sheet</li>
+      <li>Click <strong>Extensions → Apps Script</strong> and paste the script below, then click <strong>Deploy → New deployment → Web app</strong> — set access to <em>Anyone</em> and copy the URL it gives you</li>
+      <li>Paste that URL here:</li>
+    </ol>
+    <div class="setup-input-row">
+      <input type="text" id="sheet-url-input" placeholder="https://script.google.com/macros/s/…/exec">
+      <button class="btn-setup" onclick="saveSheetUrl()">Connect</button>
+    </div>
+    <div id="setup-status"></div>
+    <details style="margin-top:12px">
+      <summary style="font-size:12px; opacity:0.7; cursor:pointer;">📋 Click to see the Apps Script to paste</summary>
+      <pre id="script-block" style="margin-top:10px; background:rgba(0,0,0,0.3); border-radius:8px; padding:12px; font-size:11px; overflow-x:auto; color:#e2e8f0; white-space:pre-wrap;">function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["Timestamp","Reviewer","Subject","Dimension1","Dimension2","Dimension3","Dimension4","Dimension5","Q_Start","Q_Stop","Q_Other"]);
+  }
+  sheet.appendRow([
+    new Date().toISOString(),
+    data.reviewer, data.subject,
+    data.d1, data.d2, data.d3, data.d4, data.d5,
+    data.q1, data.q2, data.q3
+  ]);
+  return ContentService.createTextOutput(JSON.stringify({status:"ok"}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+function doGet(e) {
+  return ContentService.createTextOutput("360 Feedback endpoint active");
+}</pre>
+    </details>
+  </div>
+  <button id="close-banner" onclick="closeBanner()" title="Dismiss">✕</button>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">360<span>°</span> Feedback</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage(&#39;form&#39;)">Submit Feedback</button>
+    <button class="nav-tab" onclick="showPage(&#39;tracker&#39;)">Tracker</button>
+    <button class="nav-tab" onclick="showPage(&#39;results&#39;)">Results</button>
+    <button class="nav-tab" onclick="showPage(&#39;admin&#39;)">Admin</button>
+  </div>
+</nav>
+
+<!-- ===== FORM PAGE ===== -->
+<div id="page-form" class="page active">
+  <div id="form-step-select" class="card">
+    <div class="card-title">Who are you giving feedback on?</div>
+    <div class="card-sub">Select the person you're reviewing below</div>
+    <div class="subject-grid" id="subject-grid">
+    <div class="subject-card" id="sc-s1" onclick="selectSubject(&#39;s1&#39;)">
+      <div class="avatar">AK</div>
+      <div>
+        <div style="font-size:14px;font-weight:600;">Alex Kim</div>
+        <div style="font-size:12px;color:var(--ink-muted);">Senior Manager</div>
+      </div>
+    </div>
+  </div>
+    <div style="margin-top:8px; margin-bottom:20px;">
+      <label>Your name</label>
+      <input type="text" id="reviewer-name" placeholder="e.g. Jordan Lee">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="startForm()">Continue →</button>
+  </div>
+
+  <div id="form-step-main" style="display:none">
+    <div class="card">
+      <div class="card-title" id="form-subject-title">Feedback for</div>
+      <div class="card-sub">Your responses are anonymous — they will only appear once 3+ reviews are collected, and names are never linked to answers.</div>
+
+      <div class="progress-row">
+        <div class="progress-bar"><div class="progress-fill" id="form-progress" style="width:20%"></div></div>
+        <div class="progress-label" id="form-progress-label">Step 1 of 5</div>
+      </div>
+
+      <!-- RATINGS -->
+      <div id="ratings-section">
+        <div class="rating-section">
+          <div class="rating-label">1. Execution &amp; Delivery</div>
+          <div class="rating-desc">Follows through, meets commitments, produces quality work</div>
+          <div class="rating-stars" data-dim="1">
+            <button class="star-btn" onclick="rate(this,1,&#39;1&#39;)">1</button>
+            <button class="star-btn" onclick="rate(this,2,&#39;1&#39;)">2</button>
+            <button class="star-btn" onclick="rate(this,3,&#39;1&#39;)">3</button>
+            <button class="star-btn" onclick="rate(this,4,&#39;1&#39;)">4</button>
+            <button class="star-btn" onclick="rate(this,5,&#39;1&#39;)">5</button>
+          </div>
+          <div class="rating-anchor"><span>Needs improvement</span><span>Exceptional</span></div>
+        </div>
+        <div class="rating-section">
+          <div class="rating-label">2. Communication &amp; Collaboration</div>
+          <div class="rating-desc">Listens actively, shares information clearly, works well across teams</div>
+          <div class="rating-stars" data-dim="2">
+            <button class="star-btn" onclick="rate(this,1,&#39;2&#39;)">1</button>
+            <button class="star-btn" onclick="rate(this,2,&#39;2&#39;)">2</button>
+            <button class="star-btn" onclick="rate(this,3,&#39;2&#39;)">3</button>
+            <button class="star-btn" onclick="rate(this,4,&#39;2&#39;)">4</button>
+            <button class="star-btn" onclick="rate(this,5,&#39;2&#39;)">5</button>
+          </div>
+          <div class="rating-anchor"><span>Needs improvement</span><span>Exceptional</span></div>
+        </div>
+        <div class="rating-section">
+          <div class="rating-label">3. Problem-Solving &amp; Initiative</div>
+          <div class="rating-desc">Identifies issues proactively, brings solutions, acts without being asked</div>
+          <div class="rating-stars" data-dim="3">
+            <button class="star-btn" onclick="rate(this,1,&#39;3&#39;)">1</button>
+            <button class="star-btn" onclick="rate(this,2,&#39;3&#39;)">2</button>
+            <button class="star-btn" onclick="rate(this,3,&#39;3&#39;)">3</button>
+            <button class="star-btn" onclick="rate(this,4,&#39;3&#39;)">4</button>
+            <button class="star-btn" onclick="rate(this,5,&#39;3&#39;)">5</button>
+          </div>
+          <div class="rating-anchor"><span>Needs improvement</span><span>Exceptional</span></div>
+        </div>
+        <div class="rating-section">
+          <div class="rating-label">4. Leadership &amp; Influence</div>
+          <div class="rating-desc">Inspires others, takes ownership, role-models the culture</div>
+          <div class="rating-stars" data-dim="4">
+            <button class="star-btn" onclick="rate(this,1,&#39;4&#39;)">1</button>
+            <button class="star-btn" onclick="rate(this,2,&#39;4&#39;)">2</button>
+            <button class="star-btn" onclick="rate(this,3,&#39;4&#39;)">3</button>
+            <button class="star-btn" onclick="rate(this,4,&#39;4&#39;)">4</button>
+            <button class="star-btn" onclick="rate(this,5,&#39;4&#39;)">5</button>
+          </div>
+          <div class="rating-anchor"><span>Needs improvement</span><span>Exceptional</span></div>
+        </div>
+        <div class="rating-section">
+          <div class="rating-label">5. Growth Mindset</div>
+          <div class="rating-desc">Seeks feedback, adapts to change, continuously improves</div>
+          <div class="rating-stars" data-dim="5">
+            <button class="star-btn" onclick="rate(this,1,&#39;5&#39;)">1</button>
+            <button class="star-btn" onclick="rate(this,2,&#39;5&#39;)">2</button>
+            <button class="star-btn" onclick="rate(this,3,&#39;5&#39;)">3</button>
+            <button class="star-btn" onclick="rate(this,4,&#39;5&#39;)">4</button>
+            <button class="star-btn" onclick="rate(this,5,&#39;5&#39;)">5</button>
+          </div>
+          <div class="rating-anchor"><span>Needs improvement</span><span>Exceptional</span></div>
+        </div>
+      </div>
+
+      <hr class="section-divider">
+
+      <!-- OPEN QUESTIONS -->
+      <div style="margin-bottom:6px">
+        <label>What did this person do that had the most positive impact? (Be specific — describe what they did, not who they are)</label>
+        <textarea id="q1" placeholder="e.g. In Q4, they restructured our onboarding process which cut ramp time by 3 weeks…"></textarea>
+      </div>
+      <div style="margin-bottom:6px">
+        <label>What's one behaviour or approach that, if changed, would make them significantly more effective?</label>
+        <textarea id="q2" placeholder="e.g. When timelines slip, proactively flagging the team earlier would help everyone adjust…"></textarea>
+      </div>
+      <div>
+        <label>Anything else you'd like to share?</label>
+        <textarea id="q3" placeholder="Optional — add any other observations here"></textarea>
+      </div>
+
+      <button class="btn btn-primary btn-full" id="submit-btn" onclick="submitFeedback()" style="margin-top:8px">
+        Submit Feedback
+      </button>
+      <p id="submit-msg" style="font-size:13px; text-align:center; margin-top:12px; color:var(--ink-muted);"></p>
+    </div>
+  </div>
+
+  <div id="form-step-done" style="display:none" class="card">
+    <div class="success-state">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Feedback submitted</div>
+      <div class="success-sub">Thank you. Your responses have been recorded anonymously.</div>
+      <button class="btn btn-secondary" onclick="resetForm()" style="margin-top:24px">Submit another →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TRACKER PAGE ===== -->
+<div id="page-tracker" class="page">
+  <div class="card">
+    <div class="card-title">Completion Tracker</div>
+    <div class="card-sub">Who has submitted feedback? Names are tracked for completion only — never linked to responses.</div>
+    <div id="tracker-list"></div>
+  </div>
+</div>
+
+<!-- ===== RESULTS PAGE ===== -->
+<div id="page-results" class="page">
+  <div id="results-subject-select" class="card">
+    <div class="card-title">View Results</div>
+    <div class="card-sub">Select who you want to see results for</div>
+    <div class="subject-grid" id="results-subject-grid"></div>
+  </div>
+  <div id="results-content" style="display:none">
+    <div class="results-header">
+      <div class="results-avatar" id="res-avatar">👤</div>
+      <div>
+        <div class="results-name" id="res-name"></div>
+        <div class="results-meta" id="res-meta"></div>
+      </div>
+    </div>
+    <div id="results-body"></div>
+  </div>
+</div>
+
+<!-- ===== ADMIN PAGE ===== -->
+<div id="page-admin" class="page">
+  <div class="card">
+    <div class="card-title">Admin — Manage Subjects &amp; Reviewers</div>
+    <div class="card-sub">Add the people being reviewed and the reviewers who should submit feedback</div>
+
+    <div class="admin-grid">
+      <div>
+        <label>Add a subject (person being reviewed)</label>
+        <input type="text" id="new-subject" placeholder="Full name" style="margin-bottom:8px">
+        <input type="text" id="new-subject-role" placeholder="Role / title (optional)" style="margin-bottom:10px">
+        <button class="btn btn-primary" onclick="addSubject()">Add Subject</button>
+      </div>
+      <div>
+        <label>Add a reviewer</label>
+        <input type="text" id="new-reviewer" placeholder="Full name" style="margin-bottom:8px">
+        <input type="text" id="new-reviewer-role" placeholder="Role / title (optional)" style="margin-bottom:10px">
+        <button class="btn btn-primary" onclick="addReviewer()">Add Reviewer</button>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+    <h3 style="font-size:15px; font-weight:700; margin-bottom:14px;">Subjects being reviewed</h3>
+    <div class="table-wrap">
+      <table id="subjects-table">
+        <thead><tr><th>Name</th><th>Role</th><th>Responses</th><th></th></tr></thead>
+        <tbody id="subjects-tbody"><tr>
+      <td><strong>Alex Kim</strong></td>
+      <td style="color:var(--ink-muted)">Senior Manager</td>
+      <td><span class="badge badge-green">3 responses</span></td>
+      <td><button onclick="removeSubject(&#39;s1&#39;)" style="background:none;border:none;color:var(--ink-muted);cursor:pointer;font-size:16px;" title="Remove">✕</button></td>
+    </tr></tbody>
+      </table>
+    </div>
+
+    <hr class="section-divider">
+    <h3 style="font-size:15px; font-weight:700; margin-bottom:14px;">Reviewers</h3>
+    <div class="table-wrap">
+      <table id="reviewers-table">
+        <thead><tr><th>Name</th><th>Role</th><th>Submitted</th><th></th></tr></thead>
+        <tbody id="reviewers-tbody"><tr>
+      <td><strong>Jordan Lee</strong></td>
+      <td style="color:var(--ink-muted)">Peer</td>
+      <td><span class="badge badge-green">1/1 submitted</span></td>
+      <td><button onclick="removeReviewer(&#39;r1&#39;)" style="background:none;border:none;color:var(--ink-muted);cursor:pointer;font-size:16px;" title="Remove">✕</button></td>
+    </tr><tr>
+      <td><strong>Sam Rivera</strong></td>
+      <td style="color:var(--ink-muted)">Direct Report</td>
+      <td><span class="badge badge-green">1/1 submitted</span></td>
+      <td><button onclick="removeReviewer(&#39;r2&#39;)" style="background:none;border:none;color:var(--ink-muted);cursor:pointer;font-size:16px;" title="Remove">✕</button></td>
+    </tr><tr>
+      <td><strong>Taylor Chen</strong></td>
+      <td style="color:var(--ink-muted)">Peer</td>
+      <td><span class="badge badge-green">1/1 submitted</span></td>
+      <td><button onclick="removeReviewer(&#39;r3&#39;)" style="background:none;border:none;color:var(--ink-muted);cursor:pointer;font-size:16px;" title="Remove">✕</button></td>
+    </tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==============================
+// STATE
+// ==============================
+const STORE_KEY = '360app_v2';
+
+function loadState() {
+  try {
+    return JSON.parse(localStorage.getItem(STORE_KEY)) || defaultState();
+  } catch { return defaultState(); }
+}
+
+function defaultState() {
+  return {
+    sheetUrl: '',
+    subjects: [
+      { id: 's1', name: 'Alex Kim', role: 'Senior Manager' },
+    ],
+    reviewers: [
+      { id: 'r1', name: 'Jordan Lee', role: 'Peer' },
+      { id: 'r2', name: 'Sam Rivera', role: 'Direct Report' },
+      { id: 'r3', name: 'Taylor Chen', role: 'Peer' },
+    ],
+    submissions: [
+      { reviewer: 'Jordan Lee', subject: 'Alex Kim', d1:4, d2:5, d3:4, d4:4, d5:3, q1:'Ran the Q3 planning process end-to-end with clear documentation and kept everyone aligned.', q2:'Could loop in the team earlier when priorities shift — we sometimes find out late.', q3:'' },
+      { reviewer: 'Sam Rivera', subject: 'Alex Kim', d1:5, d2:4, d3:5, d4:4, d5:4, q1:'Created the new onboarding template that cut ramp time significantly.', q2:'Occasionally takes on too much without delegating — could trust the team more.', q3:'A great manager overall.' },
+      { reviewer: 'Taylor Chen', subject: 'Alex Kim', d1:4, d2:5, d3:3, d4:5, d5:4, q1:'Consistently runs great 1:1s and gives actionable feedback in the moment.', q2:'Would benefit from more structured project check-ins rather than ad hoc updates.', q3:'' },
+    ],
+    completions: { 'Jordan Lee': ['Alex Kim'], 'Sam Rivera': ['Alex Kim'], 'Taylor Chen': ['Alex Kim'] }
+  };
+}
+
+let state = loadState();
+
+function save() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+}
+
+// ==============================
+// SETUP BANNER
+// ==============================
+function saveSheetUrl() {
+  const url = document.getElementById('sheet-url-input').value.trim();
+  const status = document.getElementById('setup-status');
+  if (!url.startsWith('https://script.google.com')) {
+    status.textContent = '⚠ That doesn\'t look like a valid Apps Script URL — make sure you copied the deployment URL.';
+    status.className = 'err';
+    return;
+  }
+  state.sheetUrl = url;
+  save();
+  status.textContent = '✓ Connected! Responses will now save to your Google Sheet.';
+  status.className = 'ok';
+}
+
+function closeBanner() {
+  document.getElementById('setup-banner').style.display = 'none';
+}
+
+if (state.sheetUrl) {
+  document.getElementById('sheet-url-input').value = state.sheetUrl;
+  document.getElementById('setup-status').textContent = '✓ Connected to Google Sheets';
+  document.getElementById('setup-status').className = 'ok';
+}
+
+// ==============================
+// NAV
+// ==============================
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'form') renderSubjectSelect();
+  if (id === 'tracker') renderTracker();
+  if (id === 'results') renderResultsSelect();
+  if (id === 'admin') renderAdmin();
+}
+
+// ==============================
+// FORM
+// ==============================
+let currentSubject = null;
+let ratings = {};
+
+function renderSubjectSelect() {
+  const grid = document.getElementById('subject-grid');
+  grid.innerHTML = state.subjects.map(s => `
+    <div class="subject-card" id="sc-${s.id}" onclick="selectSubject('${s.id}')">
+      <div class="avatar">${initials(s.name)}</div>
+      <div>
+        <div style="font-size:14px;font-weight:600;">${s.name}</div>
+        <div style="font-size:12px;color:var(--ink-muted);">${s.role}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectSubject(id) {
+  currentSubject = id;
+  document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('sc-' + id).classList.add('selected');
+}
+
+function startForm() {
+  const reviewer = document.getElementById('reviewer-name').value.trim();
+  if (!currentSubject) return alert('Please select who you are reviewing.');
+  if (!reviewer) return alert('Please enter your name.');
+  const subj = state.subjects.find(s => s.id === currentSubject);
+  document.getElementById('form-subject-title').textContent = 'Feedback for ' + subj.name;
+  document.getElementById('form-step-select').style.display = 'none';
+  document.getElementById('form-step-main').style.display = 'block';
+  ratings = {};
+  updateProgress();
+}
+
+function rate(btn, val, dim) {
+  ratings['d' + dim] = val;
+  const row = btn.closest('.rating-stars');
+  row.querySelectorAll('.star-btn').forEach((b, i) => {
+    b.classList.toggle('selected', i < val);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const filled = Object.keys(ratings).length;
+  const pct = 20 + (filled / 5) * 60;
+  document.getElementById('form-progress').style.width = pct + '%';
+  document.getElementById('form-progress-label').textContent = `${filled} of 5 rated`;
+}
+
+async function submitFeedback() {
+  if (Object.keys(ratings).length < 5) return alert('Please rate all 5 dimensions.');
+  const reviewer = document.getElementById('reviewer-name').value.trim();
+  const subj = state.subjects.find(s => s.id === currentSubject);
+  const q1 = document.getElementById('q1').value.trim();
+  const q2 = document.getElementById('q2').value.trim();
+  const q3 = document.getElementById('q3').value.trim();
+
+  const payload = {
+    reviewer, subject: subj.name,
+    d1: ratings.d1, d2: ratings.d2, d3: ratings.d3, d4: ratings.d4, d5: ratings.d5,
+    q1, q2, q3
+  };
+
+  // Save locally
+  state.submissions.push(payload);
+  if (!state.completions[reviewer]) state.completions[reviewer] = [];
+  if (!state.completions[reviewer].includes(subj.name)) state.completions[reviewer].push(subj.name);
+  save();
+
+  // Send to Google Sheets if configured
+  if (state.sheetUrl) {
+    const msg = document.getElementById('submit-msg');
+    msg.textContent = 'Saving to Google Sheets…';
+    try {
+      await fetch(state.sheetUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      msg.textContent = '✓ Saved to Google Sheets';
+    } catch (e) {
+      msg.textContent = '⚠ Saved locally — could not reach Google Sheets. Check your URL in setup.';
+    }
+  }
+
+  document.getElementById('form-step-main').style.display = 'none';
+  document.getElementById('form-step-done').style.display = 'block';
+}
+
+function resetForm() {
+  currentSubject = null; ratings = {};
+  document.getElementById('reviewer-name').value = '';
+  document.getElementById('q1').value = ''; document.getElementById('q2').value = ''; document.getElementById('q3').value = '';
+  document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('form-step-done').style.display = 'none';
+  document.getElementById('form-step-main').style.display = 'none';
+  document.getElementById('form-step-select').style.display = 'block';
+  renderSubjectSelect();
+}
+
+// ==============================
+// TRACKER
+// ==============================
+function renderTracker() {
+  const list = document.getElementById('tracker-list');
+  list.innerHTML = state.subjects.map(subj => {
+    const done = state.reviewers.filter(r => (state.completions[r.name] || []).includes(subj.name));
+    const pct = Math.round((done.length / state.reviewers.length) * 100);
+    const rows = state.reviewers.map(r => {
+      const submitted = (state.completions[r.name] || []).includes(subj.name);
+      return `<div class="reviewer-item">
+        <div class="reviewer-avatar">${initials(r.name)}</div>
+        <div class="reviewer-name">${r.name}<div class="reviewer-role">${r.role}</div></div>
+        <span class="reviewer-status ${submitted ? 'status-done' : 'status-pending'}">${submitted ? '✓ Done' : 'Pending'}</span>
+      </div>`;
+    }).join('');
+    return `<div style="margin-bottom:28px">
+      <div style="font-size:15px;font-weight:700;margin-bottom:4px;">${subj.name} <span style="font-size:13px;color:var(--ink-muted);font-weight:400;">${subj.role}</span></div>
+      <div class="progress-row" style="margin-bottom:12px">
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="progress-label">${done.length}/${state.reviewers.length} submitted</div>
+      </div>
+      <div class="reviewer-grid">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+// ==============================
+// RESULTS
+// ==============================
+function renderResultsSelect() {
+  document.getElementById('results-content').style.display = 'none';
+  document.getElementById('results-subject-select').style.display = 'block';
+  const grid = document.getElementById('results-subject-grid');
+  grid.innerHTML = state.subjects.map(s => {
+    const count = state.submissions.filter(r => r.subject === s.name).length;
+    return `<div class="subject-card" onclick="showResults('${s.id}')">
+      <div class="avatar">${initials(s.name)}</div>
+      <div>
+        <div style="font-size:14px;font-weight:600;">${s.name}</div>
+        <div style="font-size:12px;color:var(--ink-muted);">${s.role} · ${count} response${count !== 1 ? 's' : ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showResults(id) {
+  const subj = state.subjects.find(s => s.id === id);
+  const subs = state.submissions.filter(r => r.subject === subj.name);
+  document.getElementById('results-subject-select').style.display = 'none';
+  document.getElementById('results-content').style.display = 'block';
+  document.getElementById('res-name').textContent = subj.name;
+  document.getElementById('res-avatar').textContent = initials(subj.name);
+
+  const body = document.getElementById('results-body');
+
+  if (subs.length < 3) {
+    document.getElementById('res-meta').textContent = `${subs.length} response${subs.length !== 1 ? 's' : ''} collected — 3 needed to unlock`;
+    body.innerHTML = `<div class="locked-notice">
+      <div class="lock-icon">🔒</div>
+      <h3>Results are protected</h3>
+      <p>Only ${subs.length} of 3 required responses have been collected.<br>Results unlock automatically once the threshold is reached.</p>
+    </div>`;
+    return;
+  }
+
+  document.getElementById('res-meta').textContent = `${subs.length} responses · Results anonymized`;
+
+  const dims = [
+    'Execution & Delivery',
+    'Communication & Collaboration',
+    'Problem-Solving & Initiative',
+    'Leadership & Influence',
+    'Growth Mindset'
+  ];
+  const keys = ['d1','d2','d3','d4','d5'];
+
+  const dimHtml = dims.map((d, i) => {
+    const avg = (subs.reduce((a, r) => a + (r[keys[i]] || 0), 0) / subs.length).toFixed(1);
+    const pct = (avg / 5) * 100;
+    return `<div class="dimension-block">
+      <div class="dim-header">
+        <div class="dim-name">${d}</div>
+        <div class="dim-score">${avg}<span> / 5</span></div>
+      </div>
+      <div class="dim-bar"><div class="dim-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+
+  const openQs = [
+    { label: 'What had the most positive impact?', key: 'q1' },
+    { label: 'What would make them more effective?', key: 'q2' },
+    { label: 'Other observations', key: 'q3' },
+  ];
+  const openHtml = openQs.map(q => {
+    const responses = subs.filter(r => r[q.key] && r[q.key].trim()).map(r => `<div class="response-pill">${r[q.key]}</div>`).join('');
+    if (!responses) return '';
+    return `<div class="open-q"><div class="open-q-label">${q.label}</div>${responses}</div>`;
+  }).join('');
+
+  body.innerHTML = `<div class="card">
+    <div class="card-title" style="font-size:18px">Ratings by dimension</div>
+    <div style="margin-top:20px">${dimHtml}</div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="font-size:18px">Open responses</div>
+    <div class="open-responses">${openHtml || '<p style="color:var(--ink-muted);font-size:14px;">No written responses provided.</p>'}</div>
+  </div>
+  <button class="btn btn-secondary" onclick="renderResultsSelect()" style="margin-bottom:40px">← Back to all subjects</button>`;
+
+  setTimeout(() => {
+    document.querySelectorAll('.dim-fill').forEach(el => {
+      const w = el.style.width; el.style.width = '0';
+      setTimeout(() => el.style.width = w, 50);
+    });
+  }, 100);
+}
+
+// ==============================
+// ADMIN
+// ==============================
+function addSubject() {
+  const name = document.getElementById('new-subject').value.trim();
+  const role = document.getElementById('new-subject-role').value.trim();
+  if (!name) return;
+  state.subjects.push({ id: 's' + Date.now(), name, role });
+  save(); renderAdmin();
+  document.getElementById('new-subject').value = '';
+  document.getElementById('new-subject-role').value = '';
+}
+
+function addReviewer() {
+  const name = document.getElementById('new-reviewer').value.trim();
+  const role = document.getElementById('new-reviewer-role').value.trim();
+  if (!name) return;
+  state.reviewers.push({ id: 'r' + Date.now(), name, role });
+  save(); renderAdmin();
+  document.getElementById('new-reviewer').value = '';
+  document.getElementById('new-reviewer-role').value = '';
+}
+
+function removeSubject(id) {
+  state.subjects = state.subjects.filter(s => s.id !== id);
+  save(); renderAdmin();
+}
+
+function removeReviewer(id) {
+  state.reviewers = state.reviewers.filter(r => r.id !== id);
+  save(); renderAdmin();
+}
+
+function renderAdmin() {
+  const sTbody = document.getElementById('subjects-tbody');
+  sTbody.innerHTML = state.subjects.map(s => {
+    const count = state.submissions.filter(r => r.subject === s.name).length;
+    const badge = count >= 3 ? 'badge-green' : count > 0 ? 'badge-amber' : 'badge-red';
+    return `<tr>
+      <td><strong>${s.name}</strong></td>
+      <td style="color:var(--ink-muted)">${s.role}</td>
+      <td><span class="badge ${badge}">${count} response${count !== 1 ? 's' : ''}</span></td>
+      <td><button onclick="removeSubject('${s.id}')" style="background:none;border:none;color:var(--ink-muted);cursor:pointer;font-size:16px;" title="Remove">✕</button></td>
+    </tr>`;
+  }).join('');
+
+  const rTbody = document.getElementById('reviewers-tbody');
+  rTbody.innerHTML = state.reviewers.map(r => {
+    const done = (state.completions[r.name] || []).length;
+    const badge = done >= state.subjects.length ? 'badge-green' : done > 0 ? 'badge-amber' : 'badge-red';
+    return `<tr>
+      <td><strong>${r.name}</strong></td>
+      <td style="color:var(--ink-muted)">${r.role}</td>
+      <td><span class="badge ${badge}">${done}/${state.subjects.length} submitted</span></td>
+      <td><button onclick="removeReviewer('${r.id}')" style="background:none;border:none;color:var(--ink-muted);cursor:pointer;font-size:16px;" title="Remove">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ==============================
+// UTILS
+// ==============================
+function initials(name) {
+  return name.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+}
+
+// Init
+renderSubjectSelect();
+renderAdmin();
+</script>
+
+
+</body></html>
