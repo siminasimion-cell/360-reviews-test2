@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0057)file:///C:/Users/simina.simion/Downloads/index%20(4).html -->
+<!-- saved from url=(0057)file:///C:/Users/simina.simion/Downloads/index%20(5).html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -685,6 +685,9 @@ function defaultState() {
   };
 }
 
+// Clear old demo data if Alex Kim is still cached
+let _raw = localStorage.getItem(STORE_KEY);
+if (_raw && _raw.includes('Alex Kim')) { localStorage.removeItem(STORE_KEY); }
 let state = loadState();
 
 function save() {
